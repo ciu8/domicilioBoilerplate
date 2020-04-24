@@ -1,17 +1,24 @@
 import { useState, useContext } from 'preact/hooks';
+import { ListMenu } from './listMenu';
 
 // Actions
 import { Action } from '../index'
 
-export const ListItem = ({ name, tel, site, mail, note, newEntry }) => {
+export const ListItem = ({ name, tel, site, mail, note, newEntry, menu, whatsapp }) => {
 	const [infoVisible, setInfoVisible] = useState(false);
+	const [menuVisible, setMenuVisible] = useState(false);
 	const action = useContext(Action);
 	const encodedName = encodeURIComponent(name);
 	const encodedCity = encodeURIComponent(process.env.PREACT_APP_CITY);
 	const searchUrl = `https://www.google.com/search?q=${encodedName}%20${encodedCity}`;
+	const whatsappLink = "https://wa.me/39" + whatsapp + "?text=Ciao, vorrei ordinare da voi"
 
 	function handleClick() {
 		setInfoVisible(!infoVisible);
+	}
+
+	function handleMenuClick() {
+		setMenuVisible(!menuVisible);
 	}
 
 	return (
@@ -29,6 +36,16 @@ export const ListItem = ({ name, tel, site, mail, note, newEntry }) => {
 							aria-label="warning"
 						>
 							⚠️
+						</span>
+					)}
+					{menu && (
+						<span
+							onClick={handleMenuClick}
+							class="inline-block mx-1 md:mx-2 w-8 h-8 cursor-pointer text-center leading-8 bg-green-300 rounded-lg"
+							role="img"
+							aria-label="menu"
+						>
+							📝
 						</span>
 					)}
 					{site && (
@@ -64,11 +81,32 @@ export const ListItem = ({ name, tel, site, mail, note, newEntry }) => {
 							</span>
 						</a>
 					)}
+					{whatsapp && (
+						<a href={`${whatsappLink}`}>
+							<span
+								class="inline-block mx-2 w-8 h-8 bg-green-300 text-center leading-8 rounded-lg cursor-pointer"
+								role="img"
+								aria-label="whatsapp"
+								title="Ordina su whatsapp"
+							>
+							📱
+							</span>
+						</a>
+					)}
 				</div>
 			</div>
 			{infoVisible && (
 				<div class="block mt-10">
 					<p class="text-yellow-700 text-sm md:text-md lg:text-lg">{note}</p>
+				</div>
+			)}
+			{menuVisible && (
+				<div class="block mt-10">
+					{
+						<ListMenu
+							menu={menu}
+						/>
+					}
 				</div>
 			)}
 		</div>
